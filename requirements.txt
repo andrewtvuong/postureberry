@@ -1,0 +1,4 @@
+tflite-runtime
+pillow
+opencv-python
+flask_basicauth
