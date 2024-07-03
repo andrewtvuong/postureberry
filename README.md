@@ -4,6 +4,11 @@ This project utilizes a Coral TPU USB Accelerator to detect and alert you about 
 
 The effects of bad posture and modern desk jobs can be very damaging to our health. This project aims to seamlessly and inexpensively help you maintain good posture by alerting you when you are slouching or not sitting correctly. Can extend beyond alerts for bad posture detected => ???? alert, punishment, 📉 etc ????
 
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://github.com/andrewtvuong/postureberry/blob/main/movenet_result_bad_posture.jpg" alt="bad posture" style="width: 45%;">
+  <img src="https://github.com/andrewtvuong/postureberry/blob/main/movenet_result_better.jpg" alt="good posture" style="width: 45%;">
+</div>
+
 ## Prerequisites
 
 ### TPU USB Accelerator Compatibility (OPTIONAL, CPU Models available too)
