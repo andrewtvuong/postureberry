@@ -22,6 +22,8 @@ Use the following custom `libedgetpu` package, as the official support has been 
 - Custom `libedgetpu` package: [libedgetpu v16.0TF2.13.1-2](https://github.com/feranick/libedgetpu/releases/tag/v16.0TF2.13.1-2)
 - Relevant discussion: [Google Coral pycoral issue #137](https://github.com/google-coral/pycoral/issues/137)
 
+Big credits to https://github.com/feranick for modernizing Coral related assets and making compatible beyond 2022.
+
 Ensure you are on the latest version of Rasbian (Bookworm) for the best compatibility.
 
 ## Installation
