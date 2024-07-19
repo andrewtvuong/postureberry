@@ -3,6 +3,8 @@ from picamera2 import Picamera2
 from PIL import Image, ImageDraw
 import numpy as np
 from tflite_runtime.interpreter import Interpreter, load_delegate
+from datetime import datetime
+import os
 
 _NUM_KEYPOINTS = 17
 
@@ -27,6 +29,16 @@ def capture_image():
     
     print("Picture taken and saved as test.jpg")
 
+def create_output_path(base_path):
+    now = datetime.now()
+    date_folder = now.strftime("%Y-%m-%d")
+    output_dir = os.path.join(base_path, date_folder)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    file_index = len(os.listdir(output_dir))
+    output_path = os.path.join(output_dir, f"movenet_result_{file_index + 1}.jpg")
+    return output_path
+
 def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -34,8 +46,8 @@ def main():
         '-m', '--model', default='movenet_single_pose_thunder_ptq_edgetpu.tflite', help='File path of .tflite file.')
     parser.add_argument(
         '--output',
-        default='movenet_result.jpg',
-        help='File path of the output image.')
+        default='output',
+        help='Base directory for the output image.')
     args = parser.parse_args()
 
     # Capture the image
@@ -74,9 +86,10 @@ def main():
         x, y = pose[i][1] * width, pose[i][0] * height
         draw.ellipse([x - 2, y - 2, x + 2, y + 2], fill=(255, 0, 0))
 
-    # Save the output image
-    img.save(args.output)
-    print('Done. Results saved at', args.output)
+    # Determine the output path and save the output image
+    output_path = create_output_path(args.output)
+    img.save(output_path)
+    print('Done. Results saved at', output_path)
 
 if __name__ == '__main__':
     main()
