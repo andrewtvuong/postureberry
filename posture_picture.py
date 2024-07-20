@@ -8,7 +8,7 @@ import os
 
 _NUM_KEYPOINTS = 17
 
-def capture_image():
+def capture_image(output_dir):
     # Initialize the camera
     picam2 = Picamera2()
     
@@ -22,36 +22,42 @@ def capture_image():
     picam2.start()
     
     # Capture an image
-    picam2.capture_file("test.jpg")
+    raw_photo_path = os.path.join(output_dir, "raw_photo.jpg")
+    picam2.capture_file(raw_photo_path)
     
     # Stop the camera
     picam2.stop()
     
-    print("Picture taken and saved as test.jpg")
+    print(f"Picture taken and saved as {raw_photo_path}")
+    return raw_photo_path
 
 def create_output_path(base_path):
     now = datetime.now()
+    year = now.strftime("%Y")
+    month = now.strftime("%m")
     date_folder = now.strftime("%Y-%m-%d")
-    output_dir = os.path.join(base_path, date_folder)
+    output_dir = os.path.join(base_path, year, month)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     file_index = len(os.listdir(output_dir))
-    output_path = os.path.join(output_dir, f"movenet_result_{file_index + 1}.jpg")
+    output_path = os.path.join(output_dir, f"{date_folder}-movenet_result_{file_index + 1}.jpg")
     return output_path
 
 def main():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
-        '-m', '--model', default='movenet_single_pose_thunder_ptq_edgetpu.tflite', help='File path of .tflite file.')
+        '-m', '--model', default=os.path.join(script_dir, 'movenet_single_pose_thunder_ptq_edgetpu.tflite'), help='File path of .tflite file.')
     parser.add_argument(
         '--output',
-        default='output',
+        default=os.path.join(script_dir, 'output'),
         help='Base directory for the output image.')
     args = parser.parse_args()
 
     # Capture the image
-    capture_image()
+    raw_photo_path = capture_image(args.output)
 
     # Load the TFLite model and allocate tensors.
     interpreter = Interpreter(
@@ -65,7 +71,7 @@ def main():
     output_details = interpreter.get_output_details()
 
     # Load image and preprocess it
-    img = Image.open("test.jpg")
+    img = Image.open(raw_photo_path)
     width, height = img.size
     img_resized = img.resize((input_details[0]['shape'][2], input_details[0]['shape'][1]), Image.LANCZOS)
     img_np = np.array(img_resized)
